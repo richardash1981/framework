@@ -3,46 +3,52 @@ LOCAL BUILD, INSTALL AND RUN
 Gtk+ paths and executable names may differ between distros and
 architectures, check them on your own.
 
-The description below was tested on Fedora 15 (Lovelock) 64-bit.
+The description below was tested on Linux Mint 17.2 (Ubuntu 14.04) 64-bit, using a binary
+QT5 installer from qt.io. An updated cmake package will be required.
 
 # framework build
 
-1. export GCONF_CONFIG_SOURCE="xml:merged:$HOME/.gconf/gconf.xml.defaults"
+#1. export GCONF_CONFIG_SOURCE="xml:merged:$HOME/.gconf/gconf.xml.defaults"
+1. export CMAKE_PREFIX_PATH=$HOME/Qt5.4.2/5.4/gcc_64/
 2. cd maliit-framework
-3. qmake-qt4 -r CONFIG+=local-install PREFIX="$HOME/maliit-local" LIBDIR="$HOME/maliit-local/lib64" CONFIG+=disable-gtk-cache-update
-4. make -j4
+3. mkdir build
+4. cd build
+5. cmake -Denable-glib=OFF -DCMAKE_INSTALL_PREFIX=$HOME/maliit-local/ ../
+6. make
 
 # framework install
 
-5. make install
-6. export LD_LIBRARY_PATH="$HOME/maliit-local/lib64"
-7. GTK_PATH="$HOME/maliit-local/lib64/gtk-2.0" /usr/bin/gtk-query-immodules-2.0-64 >"$HOME/maliit-local/lib64/gtk-2.0/2.10.0/gtk.immodules"
-8. GTK_PATH="$HOME/maliit-local/lib64/gtk-3.0" /usr/bin/gtk-query-immodules-3.0-64 >"$HOME/maliit-local/lib64/gtk-3.0/3.0.0/gtk.immodules"
+7. make install
+8. export LD_LIBRARY_PATH="$HOME/Qt5.4.2/5.4/gcc_64/lib/:$HOME/maliit-local/lib"
+
+#7. GTK_PATH="$HOME/maliit-local/lib64/gtk-2.0" /usr/bin/gtk-query-immodules-2.0-64 >"$HOME/maliit-local/lib64/gtk-2.0/2.10.0/gtk.immodules"
+#8. GTK_PATH="$HOME/maliit-local/lib64/gtk-3.0" /usr/bin/gtk-query-immodules-3.0-64 >"$HOME/maliit-local/lib64/gtk-3.0/3.0.0/gtk.immodules"
 
 # plugins build
 
-9. cd ../maliit-plugins
-10. export QMAKEFEATURES="$HOME/maliit-local/mkspecs/features"
-11. qmake-qt4 -r
-12. make -j4
+9.  cd ../../maliit-plugins
+10. mkdir build
+11. cd build
+12. cmake -DCMAKE_INSTALL_PREFIX=$HOME/maliit-local/ ../
+13. make
 
 # plugins install
 
-13. make install
+14. make install
 
 # server run
 
-14. "$HOME/maliit-local/bin/maliit-server" &
+15. "$HOME/maliit-local/bin/maliit-server" &
 
 # qt app run
 
-15. export QT_PLUGIN_PATH="$HOME/maliit-local/plugins"
-16. QT_IM_MODULE=Maliit "$HOME/maliit-local/bin/maliit-exampleapp-plainqt"
+16. export QT_PLUGIN_PATH="$HOME/maliit-local/lib/qt5/plugins/"
+17. QT_IM_MODULE=Maliit "$HOME/maliit-local/bin/maliit-exampleapp-plainqt"
 
 # gtk2 app run
 
-17. GTK_IM_MODULE_FILE="$HOME/maliit-local/lib64/gtk-2.0/2.10.0/gtk.immodules" GTK_IM_MODULE=Maliit "$HOME/maliit-local/bin/maliit-exampleapp-gtk2"
+#17. GTK_IM_MODULE_FILE="$HOME/maliit-local/lib64/gtk-2.0/2.10.0/gtk.immodules" GTK_IM_MODULE=Maliit "$HOME/maliit-local/bin/maliit-exampleapp-gtk2"
 
 # gtk3 app run
 
-18. GTK_IM_MODULE_FILE="$HOME/maliit-local/lib64/gtk-3.0/3.0.0/gtk.immodules" GTK_IM_MODULE=Maliit "$HOME/maliit-local/bin/maliit-exampleapp-gtk3"
+#18. GTK_IM_MODULE_FILE="$HOME/maliit-local/lib64/gtk-3.0/3.0.0/gtk.immodules" GTK_IM_MODULE=Maliit "$HOME/maliit-local/bin/maliit-exampleapp-gtk3"
